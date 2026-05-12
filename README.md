@@ -14,7 +14,17 @@ npm run dev
 npm run build
 ```
 
-Variable opcional: `VITE_API_URL` (por defecto `http://localhost:5062/api`).
+## API en producción (Render Static Site)
+
+En el panel de Render → **Environment** del sitio estático, añade:
+
+| Key             | Value (exacto)                              |
+|-----------------|-----------------------------------------------|
+| `VITE_API_URL`  | `https://kallpanexus-api-pp.onrender.com`     |
+
+Sin barra final. El código concatena `/api` (misma base que Swagger).
+
+En **local**, si no defines la variable, se usa `http://localhost:5062/api` (ajusta al puerto de tu API).
 
 ## Repositorio remoto
 
