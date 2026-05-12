@@ -16,6 +16,7 @@ import {
   Users,
   Brush,
   QrCode,
+  ChevronDown,
 } from 'lucide-react';
 import LeadModal from '../components/LeadModal';
 import AnonymousRecommendationsBox from '../components/AnonymousRecommendationsBox';
@@ -67,6 +68,63 @@ const JOURNEY = [
   { title: 'Cierre', desc: 'Facturación, checkout y solicitud de reseña.', icon: ClipboardList },
 ];
 
+const INTERES_DEMO_STAY = [
+  {
+    id: 'calendario_ocupacion',
+    label: 'Calendario de ocupación',
+    detalles: [
+      'Vista mensual y semanal por unidad o por propiedad.',
+      'Bloqueos por mantenimiento, uso interno o canal externo.',
+      'Sincronización prevista con inventario y tarifas.',
+    ],
+  },
+  {
+    id: 'tarifas_temporada',
+    label: 'Tarifas por temporada',
+    detalles: [
+      'Temporada alta / baja, fines de semana y feriados.',
+      'Mínimos de noches y políticas por canal (web vs OTA).',
+      'Historial de cambios para auditoría comercial.',
+    ],
+  },
+  {
+    id: 'checkin_digital',
+    label: 'Check-in digital / QR',
+    detalles: [
+      'Código único por reserva y ventana de validez.',
+      'Registro de llegada sin recepción física.',
+      'Opción de documentación y firma en tablet o móvil.',
+    ],
+  },
+  {
+    id: 'reportes_finanzas',
+    label: 'Reportes de finanzas',
+    detalles: [
+      'Ocupación, ADR y RevPAR por segmento.',
+      'Cobros pendientes y depósitos de garantía.',
+      'Exportación para contabilidad.',
+    ],
+  },
+  {
+    id: 'channel_manager',
+    label: 'Integración channel manager',
+    detalles: [
+      'Inventario y tarifas alineados entre canales.',
+      'Menos overbooking y menos trabajo manual.',
+      'Mapa de restricciones por habitación o unidad.',
+    ],
+  },
+  {
+    id: 'limpieza_turnos',
+    label: 'Turnos de limpieza',
+    detalles: [
+      'Lista del día por habitación o unidad.',
+      'Estados: sucia, en limpieza, lista, bloqueada.',
+      'Asignación por persona o cuadrilla.',
+    ],
+  },
+];
+
 const CHECKLIST = [
   {
     letter: 'A',
@@ -115,6 +173,7 @@ const CHECKLIST = [
 const NexusStay = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [checked, setChecked] = useState({});
+  const [interesAbierto, setInteresAbierto] = useState(null);
 
   const toggle = useCallback((key) => {
     setChecked((prev) => {
@@ -164,12 +223,14 @@ const NexusStay = () => {
             </button>
             <Link
               to="/nexussport"
+              onClick={() => void trackStay('link_nexussport')}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50/50"
             >
               Ver Nexus Sport
             </Link>
             <Link
               to="/nexuscare"
+              onClick={() => void trackStay('link_nexuscare')}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-teal-300 hover:bg-teal-50/80"
             >
               Ver Nexus Care
@@ -268,6 +329,49 @@ const NexusStay = () => {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="rounded-2xl border border-sky-200/90 bg-gradient-to-br from-sky-50/80 via-white to-indigo-50/40 p-6 shadow-sm ring-1 ring-sky-100/80">
+          <h2 className="text-lg font-bold text-slate-900">Funcionalidades destacadas</h2>
+          <p className="mt-1 max-w-3xl text-sm text-slate-600">
+            Toca un tema para ver el alcance previsto en Nexus Stay (contenido orientativo).
+          </p>
+          <div className="mt-4 space-y-2">
+            {INTERES_DEMO_STAY.map(({ id, label, detalles }) => {
+              const abierto = interesAbierto === id;
+              return (
+                <div key={id} className="overflow-hidden rounded-xl border border-sky-200/90 bg-white shadow-sm">
+                  <button
+                    type="button"
+                    aria-expanded={abierto}
+                    onClick={() => {
+                      setInteresAbierto((prev) => {
+                        const next = prev === id ? null : id;
+                        if (next === id) void trackStay(`interes_mock|${id}`);
+                        return next;
+                      });
+                    }}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-sky-950 transition hover:bg-sky-50/80"
+                  >
+                    <span>{label}</span>
+                    <ChevronDown
+                      className={`h-5 w-5 shrink-0 text-sky-700 transition-transform ${abierto ? 'rotate-180' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  {abierto ? (
+                    <div className="border-t border-sky-100 bg-slate-50/60 px-4 py-3">
+                      <ul className="list-disc space-y-1.5 pl-5 text-sm text-slate-700">
+                        {detalles.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* 4. Checklist */}

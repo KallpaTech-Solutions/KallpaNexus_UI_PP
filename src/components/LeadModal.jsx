@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 import { X, Send } from 'lucide-react';
 
 const LeadModal = ({ isOpen, onClose, selectedSector }) => {
@@ -22,6 +23,17 @@ const LeadModal = ({ isOpen, onClose, selectedSector }) => {
     e.preventDefault();
     try {
       await api.post('/leads', { ...formData, sector: selectedSector });
+      try {
+        await api.post('/analytics/track', {
+          eventType: 'CLICK',
+          targetName: 'LeadModal|preinscripcion_enviada',
+          sector: selectedSector,
+          url: typeof window !== 'undefined' ? getClientPathname('/') : '/',
+          deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
+        });
+      } catch {
+        /* analíticas opcional */
+      }
       alert('¡Gracias! Te contactaremos pronto.');
       onClose();
     } catch (error) {

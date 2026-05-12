@@ -19,6 +19,7 @@ import {
   AlertTriangle,
   X,
   Send,
+  ChevronDown,
 } from 'lucide-react';
 import LeadModal from '../components/LeadModal';
 import api from '../api/cliente';
@@ -36,6 +37,63 @@ const KPI = [
     tone: 'amber',
   },
   { label: 'Torneos activos', value: '3', sub: '2 ligas + 1 copa', icon: Target, tone: 'violet' },
+];
+
+const INTERES_DEMO_SPORT = [
+  {
+    id: 'torneo_liga',
+    label: 'Torneos y ligas',
+    detalles: [
+      'Cuadros, fixture y horarios bloqueados en canchas.',
+      'Pagos de inscripción y reglas de desempate.',
+      'Comunicación masiva a equipos (demo).',
+    ],
+  },
+  {
+    id: 'academia_juvenil',
+    label: 'Academia / escuela',
+    detalles: [
+      'Franjas recurrentes para categorías y entrenadores.',
+      'Lista de asistencia y reemplazos.',
+      'Cobro por mes o por paquete de sesiones.',
+    ],
+  },
+  {
+    id: 'iluminacion_turnos',
+    label: 'Iluminación por turno',
+    detalles: [
+      'Encendido vinculado a reserva confirmada.',
+      'Alertas de consumo y horas extra.',
+      'Integración futura con medidores o timers.',
+    ],
+  },
+  {
+    id: 'tienda_online',
+    label: 'Tienda online del club',
+    detalles: [
+      'Indumentaria, bebidas y membresías.',
+      'Retiro en bar o envío coordinado.',
+      'Stock unificado con lo que ves en recepción.',
+    ],
+  },
+  {
+    id: 'api_externa',
+    label: 'API con app externa',
+    detalles: [
+      'Consulta de disponibilidad en tiempo casi real.',
+      'Reservas con reglas de cancelación alineadas.',
+      'Webhooks para sincronizar con tu CRM.',
+    ],
+  },
+  {
+    id: 'camaras_por_cancha',
+    label: 'Cámaras por cancha',
+    detalles: [
+      'Vista por espacio para seguridad y disputas lúdicas.',
+      'Grabación por ventana de reserva (políticas de privacidad).',
+      'Acceso restringido por rol.',
+    ],
+  },
 ];
 
 const OCCUPANCY_BY_COURT = [
@@ -115,12 +173,16 @@ function buildStaticOccupancyMap(court) {
   return m;
 }
 
-async function registrarClicNexusSport(targetName) {
+/**
+ * Registra clics en Sport. `cuentaParaInteresSector === true` asigna sector Sport (gráfico por sector).
+ * Reservas demo, preinscripción (LeadModal) y temas «interes_mock» usan true; navegación y calendario usan false.
+ */
+async function registrarClicNexusSport(targetName, cuentaParaInteresSector = false) {
   try {
     await api.post('/analytics/track', {
       eventType: 'CLICK',
       targetName,
-      sector: 'Sport',
+      sector: cuentaParaInteresSector ? 'Sport' : null,
       url: typeof window !== 'undefined' ? getClientPathname('/nexussport') : '/nexussport',
       deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
     });
@@ -184,6 +246,7 @@ const NexusSport = () => {
   const [bookingTarget, setBookingTarget] = useState(null);
   const [bookingForm, setBookingForm] = useState({ nombre: '', telefono: '', nota: '' });
   const [sessionLog, setSessionLog] = useState([]);
+  const [interesSportAbierto, setInteresSportAbierto] = useState(null);
 
   const cellKey = (dayIdx, hour) => `${dayIdx}-${hour}`;
   const userKey = (court, dayIdx, hour) => `${court}|${dayIdx}|${hour}`;
@@ -197,9 +260,9 @@ const NexusSport = () => {
     );
   };
 
-  const track = async (targetName) => {
+  const track = async (targetName, cuentaParaInteresSector = false) => {
     appendLog(targetName);
-    await registrarClicNexusSport(targetName);
+    await registrarClicNexusSport(targetName, cuentaParaInteresSector);
   };
 
   const getCellKind = (dayIdx, hour) => {
@@ -226,6 +289,7 @@ const NexusSport = () => {
     setUserReservedKeys((prev) => new Set(prev).add(uk));
     void track(
       `NexusSport|reserva_mock_enviar|${court}|${WEEK_DAYS[dayIndex].full}|${String(hour).padStart(2, '0')}h|${bookingForm.nombre || 'sin_nombre'}`,
+      true,
     );
     void track(
       `NexusSport|reserva_mock_confirmada|${court}|${WEEK_DAYS[dayIndex].full}|${String(hour).padStart(2, '0')}h`,
@@ -263,8 +327,8 @@ const NexusSport = () => {
               Lleva el control de tus espacios deportivos
             </h1>
             <p className="max-w-2xl text-lg text-slate-600">
-              Vista operativa de demostración: calendario por cancha, bar y tienda, registro de clics para analíticas.
-              Datos de ejemplo para tu pretotipo; luego enlazas con los servicios de tu sistema y tu base de datos.
+              Calendario por cancha, bar y tienda en una sola vista. Datos de ejemplo para evaluar el flujo operativo;
+              luego conectas tu backend y tus reglas reales.
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-3">
@@ -280,12 +344,14 @@ const NexusSport = () => {
             </button>
             <Link
               to="/nexusstay"
+              onClick={() => void track('NexusSport|link_nexusstay')}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-sky-200 hover:bg-sky-50/50"
             >
               Nexus Stay
             </Link>
             <Link
               to="/nexuscare"
+              onClick={() => void track('NexusSport|link_nexuscare')}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-teal-300 hover:bg-teal-50/70"
             >
               Nexus Care
@@ -299,6 +365,7 @@ const NexusSport = () => {
             </Link>
             <Link
               to="/#modulos"
+              onClick={() => void track('NexusSport|link_otros_modulos')}
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50/50"
             >
               Otros módulos
@@ -330,6 +397,49 @@ const NexusSport = () => {
           })}
         </section>
 
+        <section className="rounded-2xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/40 p-6 shadow-sm ring-1 ring-emerald-100/80">
+          <h2 className="text-lg font-bold text-slate-900">Funcionalidades destacadas</h2>
+          <p className="mt-1 max-w-3xl text-sm text-slate-600">
+            Toca un tema para ver el alcance previsto en Nexus Sport (contenido orientativo).
+          </p>
+          <div className="mt-4 space-y-2">
+            {INTERES_DEMO_SPORT.map(({ id, label, detalles }) => {
+              const abierto = interesSportAbierto === id;
+              return (
+                <div key={id} className="overflow-hidden rounded-xl border border-emerald-200/90 bg-white shadow-sm">
+                  <button
+                    type="button"
+                    aria-expanded={abierto}
+                    onClick={() => {
+                      setInteresSportAbierto((prev) => {
+                        const next = prev === id ? null : id;
+                        if (next === id) void track(`NexusSport|interes_mock|${id}`, true);
+                        return next;
+                      });
+                    }}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-emerald-950 transition hover:bg-emerald-50/80"
+                  >
+                    <span>{label}</span>
+                    <ChevronDown
+                      className={`h-5 w-5 shrink-0 text-emerald-700 transition-transform ${abierto ? 'rotate-180' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  {abierto ? (
+                    <div className="border-t border-emerald-100 bg-slate-50/60 px-4 py-3">
+                      <ul className="list-disc space-y-1.5 pl-5 text-sm text-slate-700">
+                        {detalles.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Calendario semanal por cancha */}
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-col gap-4 border-b border-slate-100 bg-slate-50/90 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -337,8 +447,7 @@ const NexusSport = () => {
               <h2 className="text-lg font-bold text-slate-900">Calendario semanal · reservas por hora</h2>
               <p className="text-sm text-slate-500">
                 Toca una celda <strong>libre</strong> para abrir el formulario de reserva (demostración). Al enviar, la
-                hora queda reservada solo en esta sesión; al recargar la página vuelve al mock inicial. Cada toque y
-                envío se registra como clic para tu mapa de calor en analíticas.
+                hora queda reservada solo en esta sesión; al recargar la página se restauran los datos de ejemplo.
               </p>
             </div>
           </div>
@@ -454,10 +563,9 @@ const NexusSport = () => {
         </section>
 
         <section className="rounded-2xl border border-violet-200 bg-violet-50/50 p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900">Clics de esta visita (referencia rápida)</h2>
+          <h2 className="text-lg font-bold text-slate-900">Actividad en esta visita</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Cada acción relevante se guarda en analíticas (sector Sport) con un nombre de objetivo único, para mapas de
-            calor y ranking de clics en tu panel. Esta lista solo muestra lo ocurrido en esta pestaña del navegador.
+            Referencia local de lo que exploraste en esta pestaña (solo en tu navegador; se borra al cerrar o recargar).
           </p>
           <ul className="mt-4 max-h-52 space-y-1.5 overflow-y-auto rounded-lg border border-violet-100 bg-white p-3 font-mono text-[11px] text-slate-800">
             {sessionLog.length === 0 ? (

@@ -17,6 +17,7 @@ import {
   Syringe,
   X,
   Bell,
+  ChevronDown,
 } from 'lucide-react';
 import LeadModal from '../components/LeadModal';
 import AnonymousRecommendationsBox from '../components/AnonymousRecommendationsBox';
@@ -74,6 +75,63 @@ const RECEPTION_QUEUE = [
   { name: 'Láser · sesión 2/4', code: 'C-0550', wait: '22 min', state: 'Espera', room: '—' },
 ];
 
+const INTERES_DEMO_CARE = [
+  {
+    id: 'recordatorios_whatsapp',
+    label: 'Recordatorios por WhatsApp',
+    detalles: [
+      'Plantillas por tipo de cita y canal preferido del paciente.',
+      'Confirmación, reprogramación y recordatorio de políticas.',
+      'Sin datos clínicos sensibles en el texto del mensaje.',
+    ],
+  },
+  {
+    id: 'consentimientos_digitales',
+    label: 'Consentimientos digitales',
+    detalles: [
+      'Versionado de documentos y trazabilidad de firma.',
+      'Asociación al acto o al paquete de tratamiento.',
+      'Descarga para archivo del paciente o institución.',
+    ],
+  },
+  {
+    id: 'reporte_por_profesional',
+    label: 'Reporte por profesional',
+    detalles: [
+      'Ocupación de agenda y mix de servicios.',
+      'Tiempo medio de sesión y huecos no utilizados.',
+      'Exportación para comisiones o nómina.',
+    ],
+  },
+  {
+    id: 'multi_sede',
+    label: 'Multi-sede / sucursales',
+    detalles: [
+      'Catálogo de servicios por sede con reglas propias.',
+      'Agenda centralizada o vista filtrada por ubicación.',
+      'Traslado de historial resumido entre sedes con permisos.',
+    ],
+  },
+  {
+    id: 'portal_paciente',
+    label: 'Portal del paciente',
+    detalles: [
+      'Próximas citas y documentos compartidos.',
+      'Pago de señas o saldos pendientes.',
+      'Canal seguro para resultados no urgentes.',
+    ],
+  },
+  {
+    id: 'inventario_insumos',
+    label: 'Inventario de insumos',
+    detalles: [
+      'Stock por cabina o por almacén.',
+      'Consumo vinculado al acto para costeo.',
+      'Alertas de mínimo y orden de compra sugerida.',
+    ],
+  },
+];
+
 const CHECKLIST = [
   {
     letter: 'A',
@@ -110,6 +168,7 @@ const NexusCare = () => {
   const [agendaDetailOpen, setAgendaDetailOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
   const [checked, setChecked] = useState({});
+  const [interesAbierto, setInteresAbierto] = useState(null);
 
   const toggle = useCallback((key) => {
     setChecked((prev) => {
@@ -212,6 +271,49 @@ const NexusCare = () => {
               <p className="mt-1 text-xs text-slate-600">{sub}</p>
             </div>
           ))}
+        </section>
+
+        <section className="rounded-2xl border border-teal-200/90 bg-gradient-to-br from-teal-50/90 via-white to-slate-50/80 p-6 shadow-sm ring-1 ring-teal-100/80">
+          <h2 className="text-lg font-bold text-slate-900">Funcionalidades destacadas</h2>
+          <p className="mt-1 max-w-3xl text-sm text-slate-600">
+            Toca un tema para ver el alcance previsto en Nexus Care (contenido orientativo).
+          </p>
+          <div className="mt-4 space-y-2">
+            {INTERES_DEMO_CARE.map(({ id, label, detalles }) => {
+              const abierto = interesAbierto === id;
+              return (
+                <div key={id} className="overflow-hidden rounded-xl border border-teal-200/90 bg-white shadow-sm">
+                  <button
+                    type="button"
+                    aria-expanded={abierto}
+                    onClick={() => {
+                      setInteresAbierto((prev) => {
+                        const next = prev === id ? null : id;
+                        if (next === id) void trackCare(`interes_mock|${id}`);
+                        return next;
+                      });
+                    }}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-teal-950 transition hover:bg-teal-50/80"
+                  >
+                    <span>{label}</span>
+                    <ChevronDown
+                      className={`h-5 w-5 shrink-0 text-teal-700 transition-transform ${abierto ? 'rotate-180' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  {abierto ? (
+                    <div className="border-t border-teal-100 bg-slate-50/60 px-4 py-3">
+                      <ul className="list-disc space-y-1.5 pl-5 text-sm text-slate-700">
+                        {detalles.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* Agenda del día */}
