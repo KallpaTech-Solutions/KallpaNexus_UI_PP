@@ -15,6 +15,8 @@ import {
   Clock,
   FileText,
   Syringe,
+  X,
+  Bell,
 } from 'lucide-react';
 import LeadModal from '../components/LeadModal';
 import AnonymousRecommendationsBox from '../components/AnonymousRecommendationsBox';
@@ -65,6 +67,13 @@ const JOURNEY = [
   { title: 'Cierre operativo', desc: 'Pago, facturación y métricas de ocupación por profesional y por servicio.', icon: Activity },
 ];
 
+const RECEPTION_QUEUE = [
+  { name: 'Paciente demo · consulta', code: 'C-1042', wait: '—', state: 'En cabina', room: 'Box 1' },
+  { name: 'Control post-procedimiento', code: 'C-9811', wait: '2 min', state: 'Llamar', room: 'Box 2' },
+  { name: 'Valoración estética', code: 'C-1203', wait: '14 min', state: 'Espera', room: '—' },
+  { name: 'Láser · sesión 2/4', code: 'C-0550', wait: '22 min', state: 'Espera', room: '—' },
+];
+
 const CHECKLIST = [
   {
     letter: 'A',
@@ -97,6 +106,9 @@ const CHECKLIST = [
 
 const NexusCare = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [receptionOpen, setReceptionOpen] = useState(false);
+  const [agendaDetailOpen, setAgendaDetailOpen] = useState(false);
+  const [policiesOpen, setPoliciesOpen] = useState(false);
   const [checked, setChecked] = useState({});
 
   const toggle = useCallback((key) => {
@@ -201,7 +213,10 @@ const NexusCare = () => {
             <h2 className="text-2xl font-bold text-slate-900">Agenda del día (ejemplo)</h2>
             <button
               type="button"
-              onClick={() => void trackCare('agenda_ver_detalle')}
+              onClick={() => {
+                void trackCare('agenda_ver_detalle');
+                setAgendaDetailOpen(true);
+              }}
               className="text-sm font-semibold text-teal-800 underline-offset-2 hover:underline"
             >
               Ver detalle en panel (pretotipo)
@@ -253,7 +268,10 @@ const NexusCare = () => {
             </ul>
             <button
               type="button"
-              onClick={() => void trackCare('servicios_ver_politicas')}
+              onClick={() => {
+                void trackCare('servicios_ver_politicas');
+                setPoliciesOpen(true);
+              }}
               className="mt-4 text-sm font-semibold text-teal-800 underline-offset-2 hover:underline"
             >
               Políticas de cancelación y no presentado (demo)
@@ -280,7 +298,10 @@ const NexusCare = () => {
             </ul>
             <button
               type="button"
-              onClick={() => void trackCare('panel_recepcion_mock')}
+              onClick={() => {
+                void trackCare('panel_recepcion_mock');
+                setReceptionOpen(true);
+              }}
               className="mt-6 inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
             >
               <Clock className="h-4 w-4" aria-hidden />
@@ -363,6 +384,186 @@ const NexusCare = () => {
           Nexus Care · referencia de producto · sin datos reales de pacientes
         </p>
       </div>
+
+      {receptionOpen && (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reception-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setReceptionOpen(false);
+          }}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-slate-800 bg-slate-900 px-5 py-4 text-white">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-teal-300/90">Nexus Care · demo</p>
+                <h2 id="reception-title" className="text-lg font-bold">
+                  Vista recepción
+                </h2>
+                <p className="mt-1 text-xs text-slate-300">Cola del día y estados (datos ficticios).</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReceptionOpen(false)}
+                className="rounded-lg p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                aria-label="Cerrar"
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+            <div className="max-h-[calc(90vh-6rem)] space-y-5 overflow-y-auto p-5">
+              <div className="flex items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50 px-3 py-2 text-xs text-amber-950">
+                <Bell className="h-4 w-4 shrink-0 text-amber-700" aria-hidden />
+                <span>
+                  <strong className="font-semibold">Aviso operativo:</strong> 1 cita con pago pendiente antes de las
+                  15:00.
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Sala de espera / llamados</h3>
+                <ul className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200">
+                  {RECEPTION_QUEUE.map((row) => (
+                    <li key={row.code} className="flex flex-wrap items-center justify-between gap-2 px-3 py-3 text-sm">
+                      <div>
+                        <p className="font-semibold text-slate-900">{row.name}</p>
+                        <p className="text-xs text-slate-500">
+                          Código <span className="font-mono">{row.code}</span>
+                          {row.room !== '—' && (
+                            <>
+                              {' '}
+                              · {row.room}
+                            </>
+                          )}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span
+                          className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                            row.state === 'En cabina'
+                              ? 'bg-teal-100 text-teal-900'
+                              : row.state === 'Llamar'
+                                ? 'bg-amber-100 text-amber-900'
+                                : 'bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          {row.state}
+                        </span>
+                        <p className="mt-0.5 text-xs text-slate-500">Espera {row.wait}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <p className="text-center text-xs text-slate-400">
+                En el producto final esta vista viviría en tablet o segundo monitor de recepción.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {agendaDetailOpen && (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="agenda-detail-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setAgendaDetailOpen(false);
+          }}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 bg-teal-50/80 px-5 py-4">
+              <h2 id="agenda-detail-title" className="text-lg font-bold text-slate-900">
+                Detalle agenda · hoy
+              </h2>
+              <button
+                type="button"
+                onClick={() => setAgendaDetailOpen(false)}
+                className="rounded-lg p-2 text-slate-500 transition hover:bg-white hover:text-slate-800"
+                aria-label="Cerrar"
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+            <div className="max-h-[calc(90vh-5rem)] overflow-y-auto p-5">
+              <p className="mb-4 text-sm text-slate-600">
+                Misma información que la tabla principal, con foco en coordinación entre recepción y cabinas.
+              </p>
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-xs font-bold uppercase text-slate-500">
+                    <th className="pb-2">Hora</th>
+                    <th className="pb-2">Motivo</th>
+                    <th className="pb-2">Sala</th>
+                    <th className="pb-2">Estado</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {TODAY_APPOINTMENTS.map((row) => (
+                    <tr key={`d-${row.time}`}>
+                      <td className="py-2 font-mono text-xs">{row.time}</td>
+                      <td className="py-2 text-slate-800">{row.patient}</td>
+                      <td className="py-2 text-slate-600">{row.room}</td>
+                      <td className="py-2 text-slate-600">{row.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {policiesOpen && (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="policies-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setPoliciesOpen(false);
+          }}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+              <h2 id="policies-title" className="text-lg font-bold text-slate-900">
+                Políticas (demo)
+              </h2>
+              <button
+                type="button"
+                onClick={() => setPoliciesOpen(false)}
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                aria-label="Cerrar"
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+            <div className="max-h-[calc(90vh-5rem)] space-y-3 overflow-y-auto p-5 text-sm text-slate-700">
+              <p>
+                <strong className="text-slate-900">Cancelación:</strong> reprogramación sin coste hasta 24 h antes;
+                dentro de 24 h puede aplicarse cargo según tabla del centro.
+              </p>
+              <p>
+                <strong className="text-slate-900">No presentado:</strong> bloqueo suave de nueva reserva web hasta
+                regularizar; recepción puede liberar la excepción con nota de auditoría.
+              </p>
+              <p className="text-xs text-slate-500">Texto orientativo para talleres con clientes; no constituye asesoría legal.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <LeadModal isOpen={modalOpen} onClose={() => setModalOpen(false)} selectedSector="Care" />
     </>
