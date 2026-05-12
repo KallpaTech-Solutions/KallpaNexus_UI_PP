@@ -191,6 +191,15 @@ export default function GuideBot() {
                     .
                   </p>
                 )}
+                {choice.sector === 'Care' && (
+                  <p className="text-xs text-slate-500">
+                    Vista clínica / agenda en{' '}
+                    <Link to="/nexuscare" className="font-semibold text-teal-800 underline-offset-2 hover:underline">
+                      Nexus Care
+                    </Link>
+                    .
+                  </p>
+                )}
 
                 <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
                   <p className="font-semibold text-slate-900">Siguiente paso</p>
@@ -219,10 +228,14 @@ export default function GuideBot() {
                       <Trophy className="h-3 w-3" aria-hidden />
                       Sport
                     </Link>
-                    <span className="inline-flex items-center gap-1 rounded-lg border border-slate-100 px-2 py-1 text-slate-400">
+                    <Link
+                      to="/nexuscare"
+                      onClick={() => void trackBot('link_nexuscare')}
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 font-medium text-teal-900 hover:bg-teal-50"
+                    >
                       <HeartPulse className="h-3 w-3" aria-hidden />
-                      Care (pronto)
-                    </span>
+                      Care
+                    </Link>
                     <span className="inline-flex items-center gap-1 rounded-lg border border-slate-100 px-2 py-1 text-slate-400">
                       <Tractor className="h-3 w-3" aria-hidden />
                       Gear (pronto)

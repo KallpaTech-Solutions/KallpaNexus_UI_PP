@@ -42,7 +42,7 @@ const Footer = () => {
                 <FooterLink icon={Bed} text="Nexus Stay" to="/nexusstay" />
               </li>
               <li>
-                <FooterLink icon={HeartPulse} text="Nexus Care" to="/#modulos" />
+                <FooterLink icon={HeartPulse} text="Nexus Care" to="/nexuscare" />
               </li>
               <li>
                 <FooterLink icon={Tractor} text="Nexus Gear" to="/#modulos" />

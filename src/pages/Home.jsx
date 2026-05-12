@@ -54,10 +54,15 @@ const SECTORS = [
     icon: HeartPulse,
     title: 'Nexus Care',
     tag: 'Salud y estética',
-    gradient: 'from-violet-600 via-fuchsia-500 to-fuchsia-600',
-    accent: 'violet',
-    desc: 'Agenda de citas, historial por paciente/cliente, recordatorios y control de servicios recurrentes.',
-    points: ['Citas y confirmaciones', 'Expediente unificado', 'Campañas de retención'],
+    exploreHref: '/nexuscare',
+    gradient: 'from-slate-800 via-teal-900 to-slate-900',
+    accent: 'clinical',
+    desc: 'Agenda clínica, historial resumido por visita, consentimientos y control de cabinas — con interfaz sobria para entornos de salud y spa médico.',
+    points: [
+      'Citas, sala de espera y ocupación por profesional o cabina',
+      'Continuidad: alertas, consentimientos y trazabilidad operativa',
+      'Panel para dirección: cumplimiento y productividad sin ruido visual',
+    ],
   },
   {
     id: 'Gear',
@@ -376,6 +381,19 @@ const ACCENT = {
       'border-slate-200 bg-white text-slate-800 hover:border-amber-200 hover:bg-amber-50/90 hover:text-amber-900',
     singleBtn:
       'border-slate-200 bg-white text-slate-800 hover:border-amber-200 hover:bg-amber-50/90 hover:text-amber-900',
+  },
+  clinical: {
+    ring: 'ring-teal-600/30 hover:ring-teal-500/40',
+    iconWrap: 'bg-white/20 shadow-lg shadow-black/30 ring-1 ring-white/35',
+    badge: 'border border-white/30 bg-white/15 text-white',
+    pointRow: 'border-teal-100/90 bg-teal-50/60',
+    check: 'text-teal-800',
+    primaryBtn:
+      'bg-gradient-to-r from-teal-800 to-slate-900 text-white shadow-lg shadow-teal-900/30 hover:from-teal-900 hover:to-black',
+    secondaryBtn:
+      'border-slate-200 bg-white text-slate-800 hover:border-teal-300 hover:bg-teal-50/90 hover:text-teal-950',
+    singleBtn:
+      'border-slate-200 bg-white text-slate-800 hover:border-teal-300 hover:bg-teal-50/90 hover:text-teal-950',
   },
 };
 

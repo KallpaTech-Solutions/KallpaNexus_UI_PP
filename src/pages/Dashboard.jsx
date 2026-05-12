@@ -10,9 +10,18 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { Users, MousePointer2, Briefcase, Eye, MessageSquare, Lock } from 'lucide-react';
+import { Users, MousePointer2, Briefcase, Eye, MessageSquare, Lock, HeartPulse } from 'lucide-react';
+import { describeAnalyticsClick } from '../utils/analyticsClickLabels';
 
 const COLORS = ['#16a34a', '#2563eb', '#9333ea', '#ea580c'];
+
+/** Colores consistentes por vertical en el gráfico de sectores */
+const SECTOR_BAR_COLORS = {
+  Sport: '#16a34a',
+  Stay: '#2563eb',
+  Care: '#0f766e',
+  Gear: '#ea580c',
+};
 
 const Dashboard = () => {
   const [leads, setLeads] = useState([]);
@@ -61,6 +70,12 @@ const Dashboard = () => {
   }
 
   const totalInteractions = sectorData.reduce((acc, curr) => acc + (curr.total ?? 0), 0);
+
+  const careSectorTotal = sectorData.find((s) => s.sector === 'Care')?.total ?? 0;
+  const careLeadsCount = leads.filter((l) => String(l.sector) === 'Care').length;
+  const careClickRows = topClicks.filter((c) => String(c.elemento).startsWith('NexusCare|')).slice(0, 12);
+  const careClicksSum = careClickRows.reduce((a, r) => a + (r.clicks ?? 0), 0);
+  const careVisits = topPages.find((p) => p.ruta === '/nexuscare')?.visitas ?? 0;
 
   return (
     <div className="animate-in fade-in space-y-8 duration-500">
@@ -127,8 +142,11 @@ const Dashboard = () => {
                   itemStyle={{ color: '#0f172a' }}
                 />
                 <Bar dataKey="total" radius={[4, 4, 0, 0]}>
-                  {sectorData.map((entry, index) => (
-                    <Cell key={`cell-${entry.sector}`} fill={COLORS[index % COLORS.length]} />
+                  {sectorData.map((entry) => (
+                    <Cell
+                      key={`cell-${entry.sector}`}
+                      fill={SECTOR_BAR_COLORS[entry.sector] ?? '#64748b'}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -171,24 +189,115 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <section className="rounded-2xl border border-teal-200/80 bg-gradient-to-br from-slate-50 via-white to-teal-50/50 p-6 shadow-sm ring-1 ring-slate-200/90">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900">
+              <HeartPulse className="h-6 w-6 shrink-0 text-teal-800" aria-hidden />
+              Nexus Care — salud y estética
+            </h3>
+            <p className="mt-1 max-w-3xl text-sm text-slate-600">
+              Resumen para dirección: eventos con sector <strong className="text-slate-800">Care</strong>, preinscripciones,
+              visitas a la ruta <span className="font-mono text-xs text-slate-500">/nexuscare</span> y los clics
+              etiquetados como <span className="font-mono text-xs text-slate-500">NexusCare|…</span>.
+            </p>
+          </div>
+        </div>
+        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Eventos sector Care</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-teal-900">{careSectorTotal}</p>
+            <p className="text-xs text-slate-500">Clics y acciones con sector asignado</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Leads Care</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{careLeadsCount}</p>
+            <p className="text-xs text-slate-500">Preinscripciones desde la vertical</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Visitas /nexuscare</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{careVisits}</p>
+            <p className="text-xs text-slate-500">Cargas de página (VISIT)</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Clics en vista Care</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{careClicksSum}</p>
+            <p className="text-xs text-slate-500">Suma top acciones NexusCare| (tabla)</p>
+          </div>
+        </div>
+        {careClickRows.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-center text-sm text-slate-500">
+            Aún no hay clics registrados desde Nexus Care. Navega la vista demo y vuelve a actualizar.
+          </p>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <h4 className="border-b border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-bold text-slate-800">
+              Acciones más frecuentes (Nexus Care)
+            </h4>
+            <div className="max-h-[220px] overflow-y-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-2">Interacción</th>
+                    <th className="px-4 py-2 text-right">Clics</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {careClickRows.map((row, idx) => {
+                    const { label, title } = describeAnalyticsClick(row.elemento);
+                    return (
+                      <tr key={`care-${row.elemento}-${idx}`}>
+                        <td className="cursor-help px-4 py-2 text-slate-800" title={title || row.elemento}>
+                          {label}
+                        </td>
+                        <td className="px-4 py-2 text-right tabular-nums text-slate-700">{row.clicks}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </section>
+
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h3 className="mb-4 text-xl font-bold text-slate-900">Top clics (targetName)</h3>
+          <h3 className="text-xl font-bold text-slate-900">Top clics</h3>
+          <p className="mb-4 mt-1 text-xs text-slate-500">
+            Descripción en español. Pasa el cursor sobre una fila para ver el identificador técnico guardado en la base de datos.
+          </p>
           <div className="max-h-[260px] overflow-y-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500">
-                  <th className="pb-2 font-medium">Elemento</th>
+                  <th className="pb-2 font-medium">Interacción</th>
                   <th className="pb-2 text-right font-medium">Clics</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {topClicks.slice(0, 15).map((row) => (
-                  <tr key={row.elemento}>
-                    <td className="py-2 text-xs text-slate-800 break-all">{row.elemento}</td>
-                    <td className="py-2 text-right tabular-nums text-slate-700">{row.clicks}</td>
+                {topClicks.length === 0 ? (
+                  <tr>
+                    <td colSpan={2} className="py-6 text-center text-slate-500">
+                      Aún no hay clics registrados.
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  topClicks.slice(0, 15).map((row, idx) => {
+                    const { label, title } = describeAnalyticsClick(row.elemento);
+                    return (
+                      <tr key={`${row.elemento}-${idx}`}>
+                        <td
+                          className="cursor-help py-2 text-sm leading-snug text-slate-800"
+                          title={title || row.elemento}
+                        >
+                          {label}
+                        </td>
+                        <td className="py-2 text-right tabular-nums text-slate-700">{row.clicks}</td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

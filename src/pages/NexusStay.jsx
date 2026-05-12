@@ -164,9 +164,15 @@ const NexusStay = () => {
             </button>
             <Link
               to="/nexussport"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-sky-200 hover:bg-sky-50/50"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50/50"
             >
               Ver Nexus Sport
+            </Link>
+            <Link
+              to="/nexuscare"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-teal-300 hover:bg-teal-50/80"
+            >
+              Ver Nexus Care
             </Link>
           </div>
         </header>
