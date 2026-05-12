@@ -68,11 +68,16 @@ const SECTORS = [
     id: 'Gear',
     icon: Tractor,
     title: 'Nexus Gear',
-    tag: 'Alquiler de maquinaria',
-    gradient: 'from-amber-500 via-orange-500 to-orange-600',
+    tag: 'Maquinaria, taller y patio',
+    exploreHref: '/nexusgear',
+    gradient: 'from-amber-600 via-orange-600 to-slate-900',
     accent: 'amber',
-    desc: 'Contratos de alquiler, disponibilidad de flota, mantenimiento preventivo y trazabilidad de activos.',
-    points: ['Disponibilidad en tiempo real', 'Entregas y devoluciones', 'Rentabilidad por activo'],
+    desc: 'Alquiler de flota, talleres de vehículos pesados, concesionarias y patio: contratos, checklist de salida/entrada, OT y trazabilidad por activo.',
+    points: [
+      'Catálogo de máquinas con disponibilidad y documentación',
+      'Taller: bahías, repuestos y historial por chasis / horómetro',
+      'QR o placa interna para seguir cada activo en patio u obra',
+    ],
   },
 ];
 

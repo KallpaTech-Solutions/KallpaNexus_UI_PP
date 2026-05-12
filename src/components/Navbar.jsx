@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Home as HomeIcon, Sparkles, Trophy, Bed, HeartPulse } from 'lucide-react';
+import { LayoutDashboard, Home as HomeIcon, Sparkles, Trophy, Bed, HeartPulse, Tractor } from 'lucide-react';
 
 const Navbar = () => {
   return (
@@ -35,6 +35,13 @@ const Navbar = () => {
           >
             <HeartPulse className="h-3.5 w-3.5" aria-hidden />
             Nexus Care
+          </Link>
+          <Link
+            to="/nexusgear"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-amber-950 transition-colors hover:bg-amber-50"
+          >
+            <Tractor className="h-3.5 w-3.5" aria-hidden />
+            Nexus Gear
           </Link>
           <Link
             to="/#modulos"

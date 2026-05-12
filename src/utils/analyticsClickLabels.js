@@ -13,6 +13,7 @@ const EXACT = {
   'GuideBot|link_nexusstay': 'Guía Kallpa · Enlace a Nexus Stay',
   'GuideBot|link_nexussport': 'Guía Kallpa · Enlace a Nexus Sport',
   'GuideBot|link_nexuscare': 'Guía Kallpa · Enlace a Nexus Care',
+  'GuideBot|link_nexusgear': 'Guía Kallpa · Enlace a Nexus Gear',
   'GuideBot|reiniciar': 'Guía Kallpa · Reiniciar conversación',
   'NexusStay|boton_preinscripcion': 'Nexus Stay · Botón de preinscripción / lead',
   'NexusSport|boton_preinscripcion': 'Nexus Sport · Botón de preinscripción / lead',
@@ -24,6 +25,17 @@ const EXACT = {
   'NexusCare|panel_recepcion_mock': 'Nexus Care · Vista recepción (mock)',
   'NexusCare|link_nexusstay': 'Nexus Care · Enlace a Nexus Stay',
   'NexusCare|link_nexussport': 'Nexus Care · Enlace a Nexus Sport',
+  'NexusCare|link_nexusgear': 'Nexus Care · Enlace a Nexus Gear',
+  'NexusStay|link_nexusgear': 'Nexus Stay · Enlace a Nexus Gear',
+  'NexusSport|link_nexusgear': 'Nexus Sport · Enlace a Nexus Gear',
+  'NexusGear|boton_preinscripcion': 'Nexus Gear · Preinscripción / lead',
+  'NexusGear|catalogo_exportar_mock': 'Nexus Gear · Exportar listado catálogo (mock)',
+  'NexusGear|mock_taller_abrir': 'Nexus Gear · Abrir mockup taller',
+  'NexusGear|mock_concesionaria_abrir': 'Nexus Gear · Abrir mockup concesionaria',
+  'NexusGear|mock_trazabilidad_abrir': 'Nexus Gear · Abrir mockup trazabilidad',
+  'NexusGear|link_nexussport': 'Nexus Gear · Enlace a Nexus Sport',
+  'NexusGear|link_nexusstay': 'Nexus Gear · Enlace a Nexus Stay',
+  'NexusGear|link_nexuscare': 'Nexus Gear · Enlace a Nexus Care',
 };
 
 const NEED_LABELS = {
@@ -74,6 +86,16 @@ export function describeAnalyticsClick(raw) {
     return { label: `Nexus Stay · Casilla de checklist: ${key.replace(/_/g, ' ')}`, title };
   }
 
+  if (title.startsWith('NexusGear|checklist|')) {
+    const key = title.split('|').slice(2).join(' · ');
+    return { label: `Nexus Gear · Requisito marcado: ${key.replace(/_/g, ' ')}`, title };
+  }
+
+  if (title.startsWith('NexusGear|catalogo_ver|')) {
+    const id = title.split('|')[2] ?? '';
+    return { label: `Nexus Gear · Ver ficha demo (catálogo): ${id}`, title };
+  }
+
   if (title.startsWith('NexusSport|calendario_pestana|')) {
     const name = title.split('|')[2];
     return { label: `Nexus Sport · Pestaña del calendario: ${name}`, title };
@@ -112,6 +134,7 @@ export function describeAnalyticsClick(raw) {
     .replace(/\bNexusCare\b/gi, 'Nexus Care')
     .replace(/\bNexusSport\b/gi, 'Nexus Sport')
     .replace(/\bNexusStay\b/gi, 'Nexus Stay')
+    .replace(/\bNexusGear\b/gi, 'Nexus Gear')
     .replace(/\bPrivateClubPortal\b/gi, 'Portal Tacones')
     .replace(/\bPrivateClub\b/gi, 'Acceso reservado')
     .replace(/\bGuideBot\b/gi, 'Guía Kallpa');

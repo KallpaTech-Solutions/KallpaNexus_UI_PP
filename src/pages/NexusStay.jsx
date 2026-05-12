@@ -174,6 +174,13 @@ const NexusStay = () => {
             >
               Ver Nexus Care
             </Link>
+            <Link
+              to="/nexusgear"
+              onClick={() => void trackStay('link_nexusgear')}
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-amber-300 hover:bg-amber-50/70"
+            >
+              Ver Nexus Gear
+            </Link>
           </div>
         </header>
 

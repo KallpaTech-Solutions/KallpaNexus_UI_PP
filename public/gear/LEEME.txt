@@ -1,0 +1,70 @@
+Imágenes para Nexus Gear (KallpaNexus UI)
+========================================
+
+Carpeta en el proyecto (ya creada):
+  kallpanexus-ui/public/gear/
+
+En la web se sirven como:
+  /gear/<nombre-archivo>
+
+Formato recomendado: WebP (también válido JPG/PNG si prefieres).
+Nombres SIN marcas comerciales en el archivo (fotos genéricas de stock).
+
+Lista de archivos y uso en la página
+--------------------------------------
+
+1) hero-obra-atardecer.webp
+   Tipo: hero ancho
+   Tamaño orientativo: 1600 x 700 px (ratio ~16:7)
+   Uso: cabecera de la vista Nexus Gear (obra / patio industrial, luz suave).
+
+2) catalogo-excavadora-oruga.webp
+   Tipo: tarjeta catálogo
+   Tamaño: 800 x 600 px
+   Uso: ítem "Excavadora oruga compacta" en el catálogo demo.
+
+3) catalogo-grua-telescopica.webp
+   Tipo: tarjeta catálogo
+   Tamaño: 800 x 600 px
+   Uso: ítem "Grúa telescópica todo terreno".
+
+4) catalogo-minicargador.webp
+   Tipo: tarjeta catálogo
+   Tamaño: 800 x 600 px
+   Uso: ítem "Minicargador con brazo".
+
+5) catalogo-rodillo-vial.webp
+   Tipo: tarjeta catálogo
+   Tamaño: 800 x 600 px
+   Uso: ítem "Rodillo compactador vial".
+
+6) catalogo-camion-volquete.webp
+   Tipo: tarjeta catálogo
+   Tamaño: 800 x 600 px
+   Uso: ítem "Volquete / dumper articulado".
+
+7) taller-bahia-mantenimiento.webp
+   Tipo: sección / modal
+   Tamaño: 1200 x 800 px
+   Uso: mock "Taller de mantenimiento a vehículos pesados".
+
+8) concesionaria-patio-unidades.webp
+   Tipo: sección / modal
+   Tamaño: 1200 x 700 px
+   Uso: mock "Concesionaria / patio de unidades".
+
+9) trazabilidad-activo-qr-placa.webp
+   Tipo: detalle
+   Tamaño: 600 x 600 px
+   Uso: trazabilidad de activo (placa, QR o código interno, sin datos personales).
+
+10) transporte-lowbed-carretera.webp
+    Tipo: banner secundario (opcional)
+    Tamaño: 1200 x 650 px
+    Uso: logística / transporte de equipos (lowbed).
+
+Notas
+-----
+- Si un archivo no existe, la UI muestra un icono de respaldo (no rompe la build).
+- Evita logos de OEM en las fotos si no tienes derechos.
+- Comprime WebP calidad 75–82 para web.

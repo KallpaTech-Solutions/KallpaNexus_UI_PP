@@ -291,6 +291,13 @@ const NexusSport = () => {
               Nexus Care
             </Link>
             <Link
+              to="/nexusgear"
+              onClick={() => void track('NexusSport|link_nexusgear')}
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-amber-300 hover:bg-amber-50/70"
+            >
+              Nexus Gear
+            </Link>
+            <Link
               to="/#modulos"
               className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50/50"
             >

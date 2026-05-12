@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { Users, MousePointer2, Briefcase, Eye, MessageSquare, Lock, HeartPulse } from 'lucide-react';
+import { Users, MousePointer2, Briefcase, Eye, MessageSquare, Lock, HeartPulse, Tractor } from 'lucide-react';
 import { describeAnalyticsClick } from '../utils/analyticsClickLabels';
 
 const COLORS = ['#16a34a', '#2563eb', '#9333ea', '#ea580c'];
@@ -76,6 +76,12 @@ const Dashboard = () => {
   const careClickRows = topClicks.filter((c) => String(c.elemento).startsWith('NexusCare|')).slice(0, 12);
   const careClicksSum = careClickRows.reduce((a, r) => a + (r.clicks ?? 0), 0);
   const careVisits = topPages.find((p) => p.ruta === '/nexuscare')?.visitas ?? 0;
+
+  const gearSectorTotal = sectorData.find((s) => s.sector === 'Gear')?.total ?? 0;
+  const gearLeadsCount = leads.filter((l) => String(l.sector) === 'Gear').length;
+  const gearClickRows = topClicks.filter((c) => String(c.elemento).startsWith('NexusGear|')).slice(0, 12);
+  const gearClicksSum = gearClickRows.reduce((a, r) => a + (r.clicks ?? 0), 0);
+  const gearVisits = topPages.find((p) => p.ruta === '/nexusgear')?.visitas ?? 0;
 
   return (
     <div className="animate-in fade-in space-y-8 duration-500">
@@ -247,6 +253,78 @@ const Dashboard = () => {
                     const { label, title } = describeAnalyticsClick(row.elemento);
                     return (
                       <tr key={`care-${row.elemento}-${idx}`}>
+                        <td className="cursor-help px-4 py-2 text-slate-800" title={title || row.elemento}>
+                          {label}
+                        </td>
+                        <td className="px-4 py-2 text-right tabular-nums text-slate-700">{row.clicks}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-slate-50 via-white to-amber-50/40 p-6 shadow-sm ring-1 ring-slate-200/90">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900">
+              <Tractor className="h-6 w-6 shrink-0 text-amber-900" aria-hidden />
+              Nexus Gear — flota, taller y patio
+            </h3>
+            <p className="mt-1 max-w-3xl text-sm text-slate-600">
+              Resumen para dirección: eventos con sector <strong className="text-slate-800">Gear</strong>, preinscripciones,
+              visitas a la ruta <span className="font-mono text-xs text-slate-500">/nexusgear</span> y los clics
+              etiquetados como <span className="font-mono text-xs text-slate-500">NexusGear|…</span>.
+            </p>
+          </div>
+        </div>
+        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Eventos sector Gear</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-amber-950">{gearSectorTotal}</p>
+            <p className="text-xs text-slate-500">Clics y acciones con sector asignado</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Leads Gear</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{gearLeadsCount}</p>
+            <p className="text-xs text-slate-500">Preinscripciones desde la vertical</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Visitas /nexusgear</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{gearVisits}</p>
+            <p className="text-xs text-slate-500">Cargas de página (VISIT)</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Clics en vista Gear</p>
+            <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{gearClicksSum}</p>
+            <p className="text-xs text-slate-500">Suma top acciones NexusGear| (tabla)</p>
+          </div>
+        </div>
+        {gearClickRows.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-center text-sm text-slate-500">
+            Aún no hay clics registrados desde Nexus Gear. Navega la vista demo y vuelve a actualizar.
+          </p>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <h4 className="border-b border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-bold text-slate-800">
+              Acciones más frecuentes (Nexus Gear)
+            </h4>
+            <div className="max-h-[220px] overflow-y-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-2">Interacción</th>
+                    <th className="px-4 py-2 text-right">Clics</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {gearClickRows.map((row, idx) => {
+                    const { label, title } = describeAnalyticsClick(row.elemento);
+                    return (
+                      <tr key={`gear-${row.elemento}-${idx}`}>
                         <td className="cursor-help px-4 py-2 text-slate-800" title={title || row.elemento}>
                           {label}
                         </td>
