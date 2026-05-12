@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Home as HomeIcon, Sparkles, Trophy, Bed, HeartPulse, Tractor } from 'lucide-react';
+import { Home as HomeIcon, Sparkles, Trophy, Bed, HeartPulse, Tractor } from 'lucide-react';
 
 const Navbar = () => {
   return (
@@ -69,11 +69,10 @@ const Navbar = () => {
             Inicio
           </Link>
           <Link
-            to="/admin"
-            className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 shadow-sm transition-all hover:border-violet-300 hover:bg-violet-50"
+            to="/login"
+            className="ml-1 rounded-full px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
           >
-            <LayoutDashboard className="h-4 w-4" aria-hidden />
-            Acceso admin
+            Login
           </Link>
         </div>
       </div>
