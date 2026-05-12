@@ -26,17 +26,11 @@ Sin barra final. El código concatena `/api` (misma base que Swagger).
 
 En **local**, si no defines la variable, se usa `http://localhost:5062/api` (ajusta al puerto de tu API).
 
-## Recargar `/admin` (y otras rutas) sin 404 en Render
+## Rutas y recarga (F5) en producción
 
-React Router usa rutas del lado del cliente. Si recargas en `…/admin`, el CDN busca un archivo `/admin` y responde **404** hasta que configures una **reescritura** en Render.
+La app usa **`HashRouter`**: la ruta va en el fragmento (`https://…onrender.com/#/admin`). El servidor siempre recibe un GET a `/` con `index.html`, así que **recargar en cualquier página no devuelve 404**, sin reglas extra en Render.
 
-En el **Static Site** del front → **Redirects/Rewrites** → añade una regla:
-
-| Action   | Source | Destination   |
-|----------|--------|---------------|
-| **Rewrite** | `/*`   | `/index.html` |
-
-Así las rutas que no sean archivos estáticos sirven `index.html` y el router puede montar `/admin`. Ver [Redirects and rewrites](https://render.com/docs/redirects-rewrites).
+Si más adelante quieres URLs “limpias” (`…/admin` sin `#`), cambia en `App.jsx` a `BrowserRouter` y en Render añade la reescritura **Rewrite** `/*` → `/index.html` ([documentación](https://render.com/docs/redirects-rewrites)).
 
 ## Repositorio remoto
 

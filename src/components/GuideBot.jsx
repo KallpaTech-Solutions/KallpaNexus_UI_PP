@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import LeadModal from './LeadModal';
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 
 const NEED_OPTIONS = [
   { id: 'stay_hotel', label: 'Hotel u hostal tradicional', sector: 'Stay', hint: 'Muchas habitaciones y recepción' },
@@ -50,7 +51,7 @@ async function trackBot(targetName) {
       eventType: 'CLICK',
       targetName: `GuideBot|${targetName}`,
       sector: null,
-      url: typeof window !== 'undefined' ? window.location.pathname : '/',
+      url: typeof window !== 'undefined' ? getClientPathname('/') : '/',
       deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
     });
   } catch {

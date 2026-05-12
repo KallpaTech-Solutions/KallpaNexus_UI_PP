@@ -20,6 +20,7 @@ import {
 import LeadModal from '../components/LeadModal';
 import AnonymousRecommendationsBox from '../components/AnonymousRecommendationsBox';
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 
 async function trackStay(targetName) {
   try {
@@ -27,7 +28,7 @@ async function trackStay(targetName) {
       eventType: 'CLICK',
       targetName: `NexusStay|${targetName}`,
       sector: 'Stay',
-      url: typeof window !== 'undefined' ? window.location.pathname : '/nexusstay',
+      url: typeof window !== 'undefined' ? getClientPathname('/nexusstay') : '/nexusstay',
       deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
     });
   } catch {

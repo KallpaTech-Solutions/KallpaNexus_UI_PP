@@ -1,9 +1,10 @@
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 
 export const useAnalytics = () => {
   const trackClick = async (elemento, sector, options = {}) => {
     try {
-      const path = typeof window !== 'undefined' ? window.location.pathname : null;
+      const path = typeof window !== 'undefined' ? getClientPathname() : null;
       await api.post('/analytics/track', {
         eventType: 'CLICK',
         targetName: elemento,

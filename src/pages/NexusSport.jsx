@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import LeadModal from '../components/LeadModal';
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 
 const KPI = [
   { label: 'Reservas hoy', value: '38', sub: '+6 vs ayer', icon: Calendar, tone: 'emerald' },
@@ -120,7 +121,7 @@ async function registrarClicNexusSport(targetName) {
       eventType: 'CLICK',
       targetName,
       sector: 'Sport',
-      url: typeof window !== 'undefined' ? window.location.pathname : '/nexussport',
+      url: typeof window !== 'undefined' ? getClientPathname('/nexussport') : '/nexussport',
       deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
     });
   } catch (e) {

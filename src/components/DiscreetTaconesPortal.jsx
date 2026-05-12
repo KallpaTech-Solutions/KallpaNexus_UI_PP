@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Wine } from 'lucide-react';
 import api from '../api/cliente';
+import { getClientPathname } from '../utils/appPath';
 
 const LOGO = '/tacones/logo.png';
 
@@ -11,7 +12,7 @@ async function trackPortal(targetName) {
       eventType: 'CLICK',
       targetName: `PrivateClubPortal|${targetName}`,
       sector: null,
-      url: typeof window !== 'undefined' ? window.location.pathname : '/',
+      url: typeof window !== 'undefined' ? getClientPathname('/') : '/',
       deviceType: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Móvil' : 'Escritorio',
     });
   } catch {
