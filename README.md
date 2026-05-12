@@ -26,6 +26,18 @@ Sin barra final. El código concatena `/api` (misma base que Swagger).
 
 En **local**, si no defines la variable, se usa `http://localhost:5062/api` (ajusta al puerto de tu API).
 
+## Recargar `/admin` (y otras rutas) sin 404 en Render
+
+React Router usa rutas del lado del cliente. Si recargas en `…/admin`, el CDN busca un archivo `/admin` y responde **404** hasta que configures una **reescritura** en Render.
+
+En el **Static Site** del front → **Redirects/Rewrites** → añade una regla:
+
+| Action   | Source | Destination   |
+|----------|--------|---------------|
+| **Rewrite** | `/*`   | `/index.html` |
+
+Así las rutas que no sean archivos estáticos sirven `index.html` y el router puede montar `/admin`. Ver [Redirects and rewrites](https://render.com/docs/redirects-rewrites).
+
 ## Repositorio remoto
 
 `https://github.com/KallpaTech-Solutions/KallpaNexus_UI_PP.git`
