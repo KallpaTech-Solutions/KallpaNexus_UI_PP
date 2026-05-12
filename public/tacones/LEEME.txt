@@ -1,0 +1,9 @@
+Coloca aquí los archivos estáticos (Vite los sirve como /tacones/...):
+
+  Fondo.jpg     — imagen de fondo de toda la página (opcional)
+  logo.png      — logo (círculo en cabecera y en la home)
+  promo-1.png o .jpg  — carrusel (3 imágenes, rotan cada 4 s)
+  promo-2.png o .jpg
+  promo-3.png o .jpg
+
+También puedes copiar la misma carpeta desde src/assets/Tacones si trabajas el diseño allí.
